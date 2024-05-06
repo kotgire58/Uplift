@@ -1,0 +1,168 @@
+openapi: 3.1.0
+info:
+  title: Student Registration API
+  summary: API for student registration.
+  version: 'v1.0'
+servers:
+  - url: http://localhost:3001
+paths:
+  /studentRegistrations:
+    post:
+      operationId: save-student-registration
+      description: Register a student for a course
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/StudentRegistration'
+      responses:
+        200:
+          description: Successfully saved
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/StudentRegistration'
+        400:
+          description: Bad request, such as missing or invalid fields
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized access, such as missing or invalid authentication token
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Forbidden, user does not have the necessary permissions for the resource
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error, a generic error message for unexpected conditions
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /studentRegistrations/{id}:
+    put:
+      operationId: update-student-registration
+      description: Update an existing student registration
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the student registration to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/StudentRegistration'
+      responses:
+        200:
+          description: Successfully updated
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/StudentRegistration'
+        400:
+          description: Bad request, such as missing or invalid fields
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found, the specified student registration does not exist
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: delete-student-registration
+      description: Delete an existing student registration
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the student registration to delete
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully deleted
+        404:
+          description: Not Found, the specified student registration does not exist
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    StudentRegistration:
+      type: object
+      properties:
+        id:
+          type: integer
+          examples: 
+            - 102
+        courseOfferingId:
+          type: integer
+          examples: 
+            - 1001
+        studentId:
+          type: integer
+          examples:
+            - 1
+        name:
+          type: string
+          examples:
+            - "Alex Smith"
+        age:
+          type: integer
+          examples:
+            - 22
+        email:
+          type: string
+          examples: 
+            - "alex.smith@example.com"
+        gender:
+          type: string
+          examples: 
+            - "Non-Binary"
+        educationLevel:
+          type: string
+          examples: 
+            - "Bachelor's Degree"
+        employmentStatus:
+          type: string
+          examples: 
+            - "Full-time"
+        location:
+          type: string
+          examples: 
+            - "New York, USA"
+        familyGrossIncome:
+          type: integer
+          examples: 
+            - 50000
+        fieldOfInterest:
+          type: string
+          examples: 
+            - "Computer Science"
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          examples: 
+            - Unauthenticated
+        message:
+          type: string
+          examples:
+            - User is Unauthenticated

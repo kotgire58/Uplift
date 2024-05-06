@@ -1,0 +1,173 @@
+openapi: 3.1.0
+info:
+  title: Skills to Opportunities API
+  summary: API for managing course listings, admin logins, and youth member functionalities
+  version: '1.0'
+servers:
+  - url: http://localhost:3001
+paths:
+  /coursesAvailable:
+    get:
+      operationId: list-courses
+      summary: List all available courses
+      responses:
+        200:
+          description: An array of available courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CoursesAvailable'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /admin/login:
+    post:
+      operationId: admin-login
+      summary: Admin login to manage the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "admin@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        401:
+          description: Unauthorized, such as wrong username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /member/login:
+    post:
+      operationId: member-login
+      summary: Youth Member login to access personalized dashboard and settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "member@example.com"
+                password:
+                  type: string
+                  example: "securepassword"
+      responses:
+        200:
+          description: Successful login, redirects to personalized dashboard
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirectUrl:
+                    type: string
+                    example: "/member/dashboard"
+        401:
+          description: Unauthorized, such as wrong email or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /member/reset-password:
+    post:
+      operationId: member-reset-password
+      summary: Allows a Youth Member to reset their password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "member@example.com"
+      responses:
+        200:
+          description: Password reset link sent to email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password reset link has been sent to your email."
+        404:
+          description: Email not found in system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    CoursesAvailable:
+      type: object
+      properties:
+        ID:
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        TypeOfField:
+          type: string
+        Prerequisite:
+          type: string
+      required:
+        - ID
+        - Name
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message

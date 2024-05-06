@@ -1,0 +1,108 @@
+openapi: 3.1.0
+info:
+  title: Course Search API
+  summary: API for searching and retrieving course information for Youth Members
+  version: '1.0'
+servers:
+  - url: http://localhost:3001
+paths:
+  /courses/search:
+    get:
+      operationId: search-courses
+      summary: Search for courses based on criteria
+      parameters:
+        - in: query
+          name: keyword
+          schema:
+            type: string
+          description: Keyword for searching courses
+        - in: query
+          name: fieldOfInterest
+          schema:
+            type: string
+          description: Filter by the field of interest
+      responses:
+        200:
+          description: An array of courses matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseSummary'
+        400:
+          description: Invalid search criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /courses/{courseId}:
+    get:
+      operationId: get-course-details
+      summary: Get detailed information about a specific course
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the course to retrieve
+      responses:
+        200:
+          description: Detailed information about the course
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDetails'
+        404:
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    CourseSummary:
+      type: object
+      properties:
+        courseId:
+          type: integer
+        title:
+          type: string
+        shortDescription:
+          type: string
+        fieldOfInterest:
+          type: string
+      required:
+        - courseId
+        - title
+    CourseDetails:
+      type: object
+      properties:
+        courseId:
+          type: integer
+        title:
+          type: string
+        detailedDescription:
+          type: string
+        fieldOfInterest:
+          type: string
+        prerequisites:
+          type: string
+        duration:
+          type: string
+      required:
+        - courseId
+        - title
+        - detailedDescription
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message

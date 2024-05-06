@@ -1,0 +1,91 @@
+openapi: 3.1.0
+info:
+  title: Youth Member Profile API
+  summary: API for managing Youth Member profile information
+  version: '1.0'
+servers:
+  - url: http://localhost:3001
+paths:
+  /member/profile:
+    get:
+      operationId: get-profile
+      summary: Retrieve the profile information of the Youth Member
+      responses:
+        200:
+          description: A single profile information object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberProfile'
+        404:
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: update-profile
+      summary: Update the profile information of the Youth Member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberProfileUpdateRequest'
+      responses:
+        200:
+          description: Successful update of profile information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberProfile'
+        400:
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    MemberProfile:
+      type: object
+      properties:
+        memberId:
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+        employmentStatus:
+          type: string
+        fieldOfInterest:
+          type: string
+      required:
+        - memberId
+        - name
+    MemberProfileUpdateRequest:
+      type: object
+      properties:
+        location:
+          type: string
+        employmentStatus:
+          type: string
+        fieldOfInterest:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message

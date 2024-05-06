@@ -1,0 +1,168 @@
+openapi: 3.1.0
+info:
+  title: Skills to Opportunities API
+  summary: API for managing course listings, admin logins, and user registration
+  version: '1.0'
+servers:
+  - url: http://localhost:3001
+paths:
+  /coursesAvailable:
+    get:
+      operationId: list-courses
+      summary: List all available courses
+      responses:
+        200:
+          description: An array of available courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CoursesAvailable'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /admin/login:
+    post:
+      operationId: admin-login
+      summary: Admin login to manage the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "admin@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        401:
+          description: Unauthorized, such as wrong username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user/register:
+    post:
+      operationId: user-registration
+      summary: Register a new Youth Member account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        200:
+          description: Registration successful, confirmation email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Registration successful. Please check your email to confirm."
+        400:
+          description: Bad request, such as missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user/login:
+    post:
+      operationId: user-login
+      summary: User login to the platform
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "securepassword"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        401:
+          description: Unauthorized, such as wrong username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    CoursesAvailable:
+    # Existing schema definitions...
+    Error:
+    # Existing schema definitions...
+    UserRegistration:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+        email:
+          type: string
+        gender:
+          type: string
+        educationLevel:
+          type: string
+        employmentStatus:
+          type: string
+      required:
+        - name
+        - age
+        - email
+        - gender
+        - educationLevel
+        - employmentStatus
